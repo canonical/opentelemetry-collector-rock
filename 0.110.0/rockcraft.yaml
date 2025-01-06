@@ -5,9 +5,10 @@ description: |
   Designed to collect, process, and export telemetry data such as metrics, logs, 
   and traces from various sources to multiple destinations.
 version: "0.110.0"
+base: ubuntu@24.04
 license: Apache-2.0
-base: ubuntu@22.04
-run-user: _daemon_
+platforms:
+  amd64:
 services:
   otelcol:
     override: replace
@@ -15,18 +16,8 @@ services:
     startup: enabled
     command: "/otelcol --config /config.yaml"
     user: ubuntu
-platforms:
-  amd64:
-
+run-user: _daemon_
 parts:
-  security-team-requirement:
-    plugin: nil
-    override-build: |
-      mkdir -p ${CRAFT_PART_INSTALL}/usr/share/rocks
-      (echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && \
-      dpkg-query --root=${CRAFT_PROJECT_DIR}/../bundles/ubuntu-22.04/rootfs/ -f '${db:Status-Abbrev},${binary:Package},${Version},${source:Package},${Source:Version}\n' -W) \
-      > ${CRAFT_PART_INSTALL}/usr/share/rocks/dpkg.query
-
   otelcol:
     plugin: nil
     build-snaps:
@@ -50,10 +41,18 @@ parts:
       # Copy binary
       cp $CRAFT_PART_BUILD/distributions/otelcol/_build/otelcol $CRAFT_PART_INSTALL
 
-  non-root-user:
+  ca-certs:
     plugin: nil
-    after: [ otelcol ]
-    overlay-script: |
-      # Create a user in the $CRAFT_OVERLAY chroot
-      groupadd -R $CRAFT_OVERLAY -g 1001 ubuntu
-      useradd -R $CRAFT_OVERLAY -M -r -u 1001 -g ubuntu ubuntu
+    overlay-packages:
+      - ca-certificates
+  deb-security-manifest:
+    # https://github.com/canonical/oci-factory/blob/5ce610fa00456a34ef54c09b4a82537447f61a90/IMAGE_MAINTAINER_AGREEMENT.md?plain=1#L159
+    plugin: nil
+    after:
+      - otelcol
+      - ca-certs
+    override-prime: |
+      set -x
+      mkdir -p $CRAFT_PRIME/usr/share/rocks/
+      (echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && dpkg-query --admindir=$CRAFT_PRIME/var/lib/dpkg/ -f '${db:Status-Abbrev},${binary:Package},${Version},${source:Package},${Source:Version}\n' -W) > $CRAFT_PRIME/usr/share/rocks/dpkg.query
+
