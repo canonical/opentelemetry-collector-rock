@@ -2,7 +2,7 @@
 name: opentelemetry-collector
 summary: Crucial component in the OpenTelemetry ecosystem.
 description: |
-  Designed to collect, process, and export telemetry data such as metrics, logs, 
+  Designed to collect, process, and export telemetry data such as metrics, logs,
   and traces from various sources to multiple destinations.
 version: "0.110.0"
 base: ubuntu@24.04
@@ -14,17 +14,17 @@ services:
     override: replace
     summary: "Entry point for opentelemetry-collector oci-image"
     startup: enabled
-    command: "/otelcol --config /config.yaml"
+    command: "/usr/bin/otelcol --config /etc/otelcol/config.yaml"
     user: ubuntu
-run-user: _daemon_
+
 parts:
   otelcol:
     plugin: nil
-    build-snaps:
-      - go/1.21/stable
-    source: https://github.com/open-telemetry/opentelemetry-collector-releases.git
+    source: https://github.com/open-telemetry/opentelemetry-collector-releases
     source-type: git
     source-tag: v0.110.0
+    build-snaps:
+      - go/1.23/stable
     build-packages:
       - ca-certificates
       - make
@@ -32,15 +32,12 @@ parts:
       - CGO_ENABLED: 0
       - GOOS: linux
     override-build: |
-      # Build binary
       make build DISTRIBUTIONS="otelcol"
-      
-      # Copy opentelemetry-collector config
-      cp -r $CRAFT_PART_BUILD/distributions/otelcol/config.yaml $CRAFT_PART_INSTALL
-      
-      # Copy binary
-      cp $CRAFT_PART_BUILD/distributions/otelcol/_build/otelcol $CRAFT_PART_INSTALL
-
+      install -D -m755 distributions/otelcol/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
+      install -D -m644 distributions/otelcol/config.yaml ${CRAFT_PART_INSTALL}/opt/otelcol/config.yaml
+    organize:
+      opt/otelcol/otelcol: usr/bin/otelcol
+      opt/otelcol/config.yaml: etc/otelcol/config.yaml
   ca-certs:
     plugin: nil
     overlay-packages:
@@ -55,4 +52,3 @@ parts:
       set -x
       mkdir -p $CRAFT_PRIME/usr/share/rocks/
       (echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && dpkg-query --admindir=$CRAFT_PRIME/var/lib/dpkg/ -f '${db:Status-Abbrev},${binary:Package},${Version},${source:Package},${Source:Version}\n' -W) > $CRAFT_PRIME/usr/share/rocks/dpkg.query
-
