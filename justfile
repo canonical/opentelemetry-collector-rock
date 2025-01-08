@@ -23,7 +23,7 @@ pack version:
 
 # `rockcraft clean` for a specific version
 clean version:
-  echo "Cleaning otelcol: $version"
+  echo "Cleaning opentelemetry-collector: $version"
   cd "$version" && rockcraft clean
 
 # Run a rock and open a shell into it with `kgoss`
