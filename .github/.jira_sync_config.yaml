@@ -6,7 +6,7 @@ settings:
     not_planned: rejected
 
   components:
-    - opentelemetry-collector-rock
+    - opentelemetry-collector
 
   add_gh_comment: false
   sync_description: false
