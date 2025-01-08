@@ -6,7 +6,7 @@ body:
     attributes:
       value: >
         Thanks for taking the time to fill out this bug report! Before submitting your issue, please make
-        sure you are using the latest version of the charm. If not, please try upgrading to the latest edge release prior to
+        sure you are using the latest version of the rock. If not, please try upgrading to the latest release prior to
         posting your report to make sure it's not already solved.
   - type: textarea
     id: bug-description
@@ -22,12 +22,7 @@ body:
     attributes:
       label: To Reproduce
       description: >
-        Please provide the output of `juju export-bundle` and step-by-step instructions for how to reproduce the behavior.
-        A deployment diagram could be handy too. See https://discourse.charmhub.io/t/9269 for examples.
-      placeholder: |
-        1. `juju deploy ...`
-        2. `juju relate ...`
-        3. `juju status --relations`
+        Please provide step-by-step instructions for how to reproduce the behavior.
     validations:
       required: true
   - type: textarea
@@ -35,10 +30,11 @@ body:
     attributes:
       label: Environment
       description: >
-        We need to know a bit more about the context in which you run the charm.
-        - Are you running Juju locally, on lxd, in multipass or on some other platform?
-        - What track and channel you deployed the charm from (ie. `latest/edge` or similar).
-        - Version of any applicable components, like the juju snap, the model controller, lxd, microk8s, and/or multipass.
+        We need to know a bit more about the context in which you run the rock.
+
+        - Are you running it as part of a charm or in a standalone fashion?
+
+        - Version of any applicable components, like Docker, Kubernetes, etc.
     validations:
       required: true
   - type: textarea
@@ -47,8 +43,7 @@ body:
       label: Relevant log output
       description: >
         Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-        Fetch the logs using `juju debug-log --replay` and `kubectl logs ...`. Additional details available in the juju docs
-        at https://juju.is/docs/olm/juju-logs
+        Fetch the logs using `juju debug-log --replay` and `kubectl logs ...`.
       render: shell
     validations:
       required: true
