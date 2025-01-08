@@ -1,0 +1,22 @@
+process:
+  otelcol:
+    running: true
+
+user:
+  _daemon_:
+    exists: true
+    uid: 584792
+    groups:
+    - _daemon_
+
+file:
+  /etc/otelcol/config.yaml:
+    exists: true
+    mode: "0644"
+    owner: root
+    group: root
+  /usr/bin/otelcol:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
