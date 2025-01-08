@@ -2,13 +2,6 @@ process:
   otelcol:
     running: true
 
-user:
-  _daemon_:
-    exists: true
-    uid: 584792
-    groups:
-    - _daemon_
-
 file:
   /etc/otelcol/config.yaml:
     exists: true
@@ -20,3 +13,24 @@ file:
     mode: "0755"
     owner: root
     group: root
+
+port:
+  tcp6:1777:
+    listening: true
+    port: 'tcp6:1777'
+    skip: false
+
+  tcp6:55679:
+    listening: true
+    port: 'tcp6:55679'
+    skip: false
+
+  tcp6:4317:
+    listening: true
+    port: 'tcp6:4317'
+    skip: false
+
+  tcp6:4318:
+    listening: true
+    port: 'tcp6:4318'
+    skip: false
