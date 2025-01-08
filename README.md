@@ -23,4 +23,4 @@ Automation takes care of:
 * validating PRs, by simply trying to build the rock;
 * pulling upstream releases, creating a PR with the necessary files to be manually reviewed;
 * on PRs, validate the added (or modified) rocks by running `kgoss`;
-* releasing to GHCR at [ghcr.io/canonical/otelcol:dev](https://ghcr.io/canonical/otelcol:dev), when merging to main, for development purposes.
+* releasing to GHCR at [ghcr.io/canonical/opentelemetry-collector:dev](https://ghcr.io/canonical/opentelemetry-collector:dev), when merging to main, for development purposes.
