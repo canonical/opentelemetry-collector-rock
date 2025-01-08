@@ -18,7 +18,7 @@ push-to-registry version:
 
 # Pack a rock of a specific version
 pack version:
-  echo "Packing otelcol: $version"
+  echo "Packing opentelemetry-collector: $version"
   cd "$version" && rockcraft pack
 
 # `rockcraft clean` for a specific version
