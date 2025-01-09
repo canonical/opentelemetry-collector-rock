@@ -30,11 +30,23 @@ parts:
       - GOOS: linux
     override-build: |
       make build DISTRIBUTIONS="otelcol"
-      install -D -m755 distributions/otelcol/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
-      install -D -m644 distributions/otelcol/config.yaml ${CRAFT_PART_INSTALL}/opt/otelcol/config.yaml
+      install -D distributions/otelcol/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
+      install -D distributions/otelcol/config.yaml ${CRAFT_PART_INSTALL}/opt/otelcol/config.yaml
     organize:
       opt/otelcol/otelcol: usr/bin/otelcol
       opt/otelcol/config.yaml: etc/otelcol/config.yaml
+
+    permissions:
+        # _daemon_ user has UID/GID = 584792
+        # Ref: https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#run-user
+      - path: etc/otelcol/config.yaml
+        owner: 584792
+        group: 584792
+        mode: "644"
+      - path: usr/bin/otelcol
+        owner: 584792
+        group: 584792
+        mode: "500"
   ca-certs:
     plugin: nil
     overlay-packages:
