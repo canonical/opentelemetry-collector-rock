@@ -5,14 +5,14 @@ process:
 file:
   /etc/otelcol/config.yaml:
     exists: true
-    mode: "0644"
-    owner: root
-    group: root
+    mode: "0600"
+    owner: _daemon_
+    group: _daemon_
   /usr/bin/otelcol:
     exists: true
-    mode: "0755"
-    owner: root
-    group: root
+    mode: "0500"
+    owner: _daemon_
+    group: _daemon_
 
 port:
   tcp6:1777:
