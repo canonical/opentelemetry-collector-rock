@@ -15,7 +15,7 @@ services:
     summary: "Entry point for opentelemetry-collector oci-image"
     startup: enabled
     command: "/usr/bin/otelcol --config /etc/otelcol/config.yaml"
-    user: _daemon_
+
 run-user: _daemon_
 parts:
   otelcol:
