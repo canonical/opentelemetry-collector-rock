@@ -14,7 +14,8 @@ services:
     override: replace
     summary: "Entry point for opentelemetry-collector oci-image"
     startup: enabled
-    command: "/usr/bin/otelcol --config /etc/otelcol/config.yaml"
+    command: "/usr/bin/otelcol [ --config /etc/otelcol/config.yaml ]"
+entrypoint-service: otelcol
 
 run-user: _daemon_
 parts:
