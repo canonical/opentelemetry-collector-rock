@@ -1,0 +1,34 @@
+process:
+  otelcol:
+    running: true
+
+file:
+  /etc/otelcol/config.yaml:
+    exists: true
+    mode: "0600"
+    owner: _daemon_
+    group: _daemon_
+  /usr/bin/otelcol:
+    exists: true
+    mode: "0500"
+    owner: _daemon_
+    group: _daemon_
+
+port:
+  # otlp receiver grpc
+  tcp6:4317:
+    listening: true
+    port: 'tcp6:4317'
+    skip: false
+
+  # otlp receiver http
+  tcp6:4318:
+    listening: true
+    port: 'tcp6:4318'
+    skip: false
+
+  # prometheus receiver http
+  tcp6:8888:
+    listening: true
+    port: 'tcp6:8888'
+    skip: false
