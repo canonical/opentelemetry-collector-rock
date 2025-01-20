@@ -19,7 +19,7 @@ entrypoint-service: otelcol
 
 run-user: _daemon_
 parts:
-  otelcol:
+  opentelemetry-collector:
     plugin: nil
     source: https://github.com/open-telemetry/opentelemetry-collector-releases
     source-type: git
