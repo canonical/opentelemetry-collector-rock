@@ -22,7 +22,7 @@ parts:
     plugin: nil
     source: https://github.com/open-telemetry/opentelemetry-collector-releases
     source-type: git
-    source-tag: v0.110.0
+    source-tag: v0.117.0
     build-snaps:
       - go/1.23/stable
     build-environment:
