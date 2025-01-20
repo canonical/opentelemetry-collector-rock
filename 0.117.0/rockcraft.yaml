@@ -4,7 +4,7 @@ summary: Crucial component in the OpenTelemetry ecosystem.
 description: |
   Designed to collect, process, and export telemetry data such as metrics, logs,
   and traces from various sources to multiple destinations.
-version: "0.110.0"
+version: "0.117.0"
 base: ubuntu@24.04
 license: Apache-2.0
 platforms:
@@ -16,14 +16,13 @@ services:
     startup: enabled
     command: "/usr/bin/otelcol [ --config /etc/otelcol/config.yaml ]"
 entrypoint-service: otelcol
-
 run-user: _daemon_
 parts:
   opentelemetry-collector:
     plugin: nil
     source: https://github.com/open-telemetry/opentelemetry-collector-releases
     source-type: git
-    source-tag: v0.110.0
+    source-tag: v0.117.0
     build-snaps:
       - go/1.23/stable
     build-environment:
@@ -36,10 +35,9 @@ parts:
     organize:
       opt/otelcol/otelcol: usr/bin/otelcol
       opt/otelcol/config.yaml: etc/otelcol/config.yaml
-
     permissions:
-        # _daemon_ user has UID/GID = 584792
-        # Ref: https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#run-user
+      # _daemon_ user has UID/GID = 584792
+      # Ref: https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#run-user
       - path: etc/otelcol/config.yaml
         owner: 584792
         group: 584792
