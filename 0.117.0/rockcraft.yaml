@@ -54,7 +54,7 @@ parts:
     # https://github.com/canonical/oci-factory/blob/5ce610fa00456a34ef54c09b4a82537447f61a90/IMAGE_MAINTAINER_AGREEMENT.md?plain=1#L159
     plugin: nil
     after:
-      - otelcol
+      - opentelemetry-collector
       - ca-certs
     override-prime: |
       set -x
