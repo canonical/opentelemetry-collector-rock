@@ -27,8 +27,3 @@ port:
     port: 'tcp6:4318'
     skip: false
 
-  # prometheus receiver http
-  tcp6:8888:
-    listening: true
-    port: 'tcp6:8888'
-    skip: false
