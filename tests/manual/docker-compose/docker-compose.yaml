@@ -1,0 +1,34 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - './prometheus.yml:/etc/prometheus/prometheus.yml'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-remote-write-receiver'
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    command:
+      - '--web.listen-address=:9100'
+      #- '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($|/)'
+
+  otel-collector:
+    #image: otel/opentelemetry-collector-contrib:0.118.0
+    #image: ghcr.io/canonical/opentelemetry-collector:dev
+    image: otelcol-dev:0.118.0
+    container_name: otel-collector
+    volumes:
+      - './otel-collector-config.yaml:/otel-collector-config.yaml'
+    command:
+      - '--config=/otel-collector-config.yaml'
+
+networks:
+  default:
+    driver: bridge

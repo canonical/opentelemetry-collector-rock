@@ -1,0 +1,18 @@
+receivers:
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'node-exporter'
+          metrics_path: "/metrics"
+          static_configs:
+            - targets: ['node-exporter:9100']
+
+exporters:
+  prometheusremotewrite:
+    endpoint: "http://prometheus:9090/api/v1/write"
+
+service:
+  pipelines:
+    metrics:
+      receivers: [prometheus]
+      exporters: [prometheusremotewrite]
