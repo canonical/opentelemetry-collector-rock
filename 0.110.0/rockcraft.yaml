@@ -15,8 +15,6 @@ services:
     summary: "Entry point for opentelemetry-collector oci-image"
     startup: enabled
     command: "/usr/bin/otelcol [ --config /etc/otelcol/config.yaml ]"
-entrypoint-service: otelcol
-
 run-user: _daemon_
 parts:
   opentelemetry-collector:
@@ -38,8 +36,8 @@ parts:
       opt/otelcol/config.yaml: etc/otelcol/config.yaml
 
     permissions:
-        # _daemon_ user has UID/GID = 584792
-        # Ref: https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#run-user
+      # _daemon_ user has UID/GID = 584792
+      # Ref: https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#run-user
       - path: etc/otelcol/config.yaml
         owner: 584792
         group: 584792
