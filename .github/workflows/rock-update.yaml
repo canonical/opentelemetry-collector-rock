@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    uses: canonical/observability/.github/workflows/rock-update.yaml@v0
+    uses: canonical/observability/.github/workflows/rock-update.yaml@v1
     with:
       rock-name: opentelemetry-collector
       source-repo: open-telemetry/opentelemetry-collector-releases
