@@ -1,0 +1,84 @@
+--- # OpenTelemetry Collector config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otelcol-config
+data:
+  config.yaml: |
+    # otel config goes here
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: 'otel-collector'
+            scrape_interval: 10s
+            static_configs:
+            - targets: ['0.0.0.0:8888']
+
+    exporters:
+      debug:
+        verbosity: detailed
+      prometheus:
+        endpoint: ":8889"
+      prometheusremotewrite:
+        endpoint: "http://prometheus.test-opentelemetry-collector-rock-prometheus-integration.svc.cluster.local:9090/api/v1/write"
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          exporters: [debug, prometheus, prometheusremotewrite]
+      extensions: [health_check]
+      telemetry:
+        metrics:
+          level: basic # Set to 'normal' or 'detailed' for more metrics
+--- # OpenTelemetry Collector deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-collector-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opentelemetry-collector-dev
+  template:
+    metadata:
+      labels:
+        app: opentelemetry-collector-dev
+    spec:
+      containers:
+        - name: opentelemetry-collector-dev
+          image: localhost:32000/opentelemetry-collector-dev:0.118.0
+          ports:
+            - containerPort: 55678 # workload ports, add more if needed
+            - containerPort: 13133 # health endpoint
+            - containerPort: 8888 # metrics
+          volumeMounts:
+            - name: otelcol-config-volume
+              mountPath: /etc/otelcol/config.yaml # Change this to the desired mount path
+              subPath: config.yaml  # This specifies the file name in the ConfigMap
+      volumes:
+        - name: otelcol-config-volume
+          configMap:
+            name: otelcol-config
+--- # OpenTelemetry Collector Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-collector-dev
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8888
+      name: prometheus-receiver
+    - port: 8889
+      name: metrics-endpoint
+    - port: 13133
+      name: health-check
+  selector:
+    app: opentelemetry-collector-dev
