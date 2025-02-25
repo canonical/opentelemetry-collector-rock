@@ -24,4 +24,5 @@ jobs:
           builder --config=otelcol-builder.yaml
       - name: Test binary
         run: |
-          /tmp/dist/our-super-cool-otelcol --help
+          ls ./_build
+          ./_build/our-super-cool-otelcol --help
