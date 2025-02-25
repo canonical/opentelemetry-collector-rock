@@ -1,7 +1,8 @@
 name: Build the opentelemetry collector binary
 
 on:
-  push:
+  branch:
+    - test/ocb
 
 jobs:
   build-otelcol:
