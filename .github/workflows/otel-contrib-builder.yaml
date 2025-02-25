@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-otelcol:
-    name: Detect new releases
+    name: Build the otelcol binary
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
