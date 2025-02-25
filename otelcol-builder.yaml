@@ -2,7 +2,7 @@
 
 dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/core
-  name: otelcol
+  name: our-super-cool-otelcol
   description: OpenTelemetry Collector
   version: 0.120.1
   output_path: ./_build
