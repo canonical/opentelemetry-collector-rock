@@ -35,5 +35,9 @@ jobs:
           builder --config=otelcol-builder.yaml
       - name: Test binary
         run: |
-          ls ./_build
           ./_build/our-super-cool-otelcol --help
+      - name: Upload otelcol binary as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: otelcol-binary
+          path: ./_build/our-super-cool-otelcol
