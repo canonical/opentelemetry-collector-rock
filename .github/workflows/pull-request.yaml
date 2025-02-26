@@ -37,7 +37,7 @@ jobs:
         run: |
           ./_build/our-super-cool-otelcol --help
       - name: Upload otelcol binary as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: otelcol-binary
           path: ./_build/our-super-cool-otelcol
