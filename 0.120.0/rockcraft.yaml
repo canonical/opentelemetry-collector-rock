@@ -19,32 +19,39 @@ run-user: _daemon_
 parts:
   opentelemetry-collector:
     plugin: nil
-    source: https://github.com/open-telemetry/opentelemetry-collector-releases
-    source-type: git
-    source-tag: v0.120.0
     build-snaps:
       - go/1.23/stable
     build-environment:
-      - CGO_ENABLED: 0
+      - CGO_ENABLED: "0"
       - GOOS: linux
     override-build: |
-      make build DISTRIBUTIONS="otelcol"
-      install -D distributions/otelcol/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
-      install -D distributions/otelcol/config.yaml ${CRAFT_PART_INSTALL}/opt/otelcol/config.yaml
+      go install go.opentelemetry.io/collector/cmd/builder@v0.120.0
+      echo "+++"
+      find / -name otelcol-builder.yaml 2>/dev/null
+      echo "$PWD"
+      /root/go/bin/builder --config=otelcol-builder.yaml
+      install -D -m755 ${CRAFT_PART_BUILD}/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
     organize:
       opt/otelcol/otelcol: usr/bin/otelcol
-      opt/otelcol/config.yaml: etc/otelcol/config.yaml
     permissions:
       # _daemon_ user has UID/GID = 584792
       # Ref: https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#run-user
-      - path: etc/otelcol/config.yaml
-        owner: 584792
-        group: 584792
-        mode: "600"
       - path: usr/bin/otelcol
         owner: 584792
         group: 584792
         mode: "500"
+  default-config:
+    plugin: dump
+    source: .
+    organize:
+      config.yaml: etc/otelcol/config.yaml
+    stage:
+      - etc/otelcol/config.yaml
+    permissions:
+      - path: etc/otelcol/config.yaml
+        owner: 584792
+        group: 584792
+        mode: "600"
   ca-certs:
     plugin: nil
     overlay-packages:

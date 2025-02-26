@@ -18,12 +18,12 @@ push-to-registry version:
     "docker://localhost:32000/${rock_name}-dev:${version}" >/dev/null
 
 # Pack a rock of a specific version
-pack version:
+pack version=latest_version:
   echo "Packing opentelemetry-collector: $version"
   cd "$version" && rockcraft pack
 
 # `rockcraft clean` for a specific version
-clean version:
+clean version=latest_version:
   echo "Cleaning opentelemetry-collector: $version"
   cd "$version" && rockcraft clean
 

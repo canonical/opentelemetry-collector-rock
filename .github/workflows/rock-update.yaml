@@ -8,8 +8,16 @@ on:
 jobs:
   build:
     uses: canonical/observability/.github/workflows/rock-update.yaml@v1
+    secrets: inherit
     with:
       rock-name: opentelemetry-collector
       source-repo: open-telemetry/opentelemetry-collector-releases
       check-go: true
-    secrets: inherit
+      update-script: |
+        # Data you have:
+        ## export application_src="$GITHUB_WORKSPACE/application-src"
+        ## export rockcraft_yaml="$GITHUB_WORKSPACE/main/$VERSION/rockcraft.yaml"
+        # Pseudo-script:
+        # get the otel-config.yaml from opentelemetry-collector-releases for the correct tag version
+        # yq-add the components we want
+        #   then in the future try having the list of components in a file ???

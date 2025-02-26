@@ -1,7 +1,7 @@
 # https://github.com/open-telemetry/opentelemetry-collector-releases/blob/v0.120.0/distributions/otelcol/manifest.yaml
 
 dist:
-  name: our-super-cool-otelcol
+  name: otelcol
   description: Local OpenTelemetry Collector binary
   output_path: ./_build
 
