@@ -18,7 +18,8 @@ services:
 run-user: _daemon_
 parts:
   opentelemetry-collector:
-    plugin: nil
+    plugin: dump
+    source: .
     build-snaps:
       - go/1.23/stable
     build-environment:
@@ -26,10 +27,7 @@ parts:
       - GOOS: linux
     override-build: |
       go install go.opentelemetry.io/collector/cmd/builder@v0.120.0
-      echo "+++"
-      find / -name otelcol-builder.yaml 2>/dev/null
-      echo "$PWD"
-      /root/go/bin/builder --config=otelcol-builder.yaml
+      /root/go/bin/builder --config=${CRAFT_PART_BUILD}/otelcol-builder.yaml
       install -D -m755 ${CRAFT_PART_BUILD}/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
     organize:
       opt/otelcol/otelcol: usr/bin/otelcol
