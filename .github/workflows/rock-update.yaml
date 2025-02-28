@@ -13,12 +13,3 @@ jobs:
       rock-name: opentelemetry-collector
       source-repo: open-telemetry/opentelemetry-collector-releases
       check-go: true
-      update-script: |
-        # Data you have:
-        ## export application_src="$GITHUB_WORKSPACE/application-src"
-        ## export rockcraft_yaml="$GITHUB_WORKSPACE/main/$VERSION/rockcraft.yaml"
-        # Pseudo-script:
-        # get the otel-config.yaml from opentelemetry-collector-releases for the correct tag version
-        
-        # Note this requires yq4
-        yq eval-all '. as $item ireduce ({}; . *+ $item)' upstream.yaml additions.yaml > custom.yaml

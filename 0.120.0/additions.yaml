@@ -1,6 +1,6 @@
 receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/lokireceiver v0.120.1
 
-# TODO Get the version from contrib upstream
+# TODO Get the version from contrib upstream for each and then prefix with "gomode: " and append $VERSION
 # receivers:
 #   - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/lokireceiver
