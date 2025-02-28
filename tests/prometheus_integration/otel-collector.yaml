@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
         - name: opentelemetry-collector-dev
-          image: localhost:32000/opentelemetry-collector-dev:0.118.0
+          image: localhost:32000/opentelemetry-collector-dev:$VERSION
           ports:
             - containerPort: 55678 # workload ports, add more if needed
             - containerPort: 13133 # health endpoint

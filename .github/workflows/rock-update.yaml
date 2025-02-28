@@ -19,5 +19,6 @@ jobs:
         ## export rockcraft_yaml="$GITHUB_WORKSPACE/main/$VERSION/rockcraft.yaml"
         # Pseudo-script:
         # get the otel-config.yaml from opentelemetry-collector-releases for the correct tag version
-        # yq-add the components we want
-        #   then in the future try having the list of components in a file ???
+        
+        # Note this requires yq4
+        yq eval-all '. as $item ireduce ({}; . *+ $item)' upstream.yaml additions.yaml > custom.yaml

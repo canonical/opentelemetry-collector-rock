@@ -27,7 +27,15 @@ parts:
       - GOOS: linux
     override-build: |
       go install go.opentelemetry.io/collector/cmd/builder@v0.120.0
-      /root/go/bin/builder --config=${CRAFT_PART_BUILD}/otelcol-builder.yaml
+
+      # Get the upstream otelcol configs
+      curl -L "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/tags/v0.120.0/distributions/otelcol/manifest.yaml" -o "${CRAFT_PART_BUILD}/ocb-core.yaml"
+      curl -L "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/tags/v0.120.0/distributions/otelcol-contrib/manifest.yaml" -o "${CRAFT_PART_BUILD}/ocb-contrib.yaml"
+
+      # Combine the YAML files for our custom binary
+      yq eval-all '. as $item ireduce ({}; . *+ $item)' ${CRAFT_PART_BUILD}/ocb-core.yaml additions.yaml | tee "${CRAFT_PART_BUILD}/ocb-custom.yaml"
+
+      /root/go/bin/builder --config="${CRAFT_PART_BUILD}/ocb-custom.yaml"
       install -D -m755 ${CRAFT_PART_BUILD}/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
     organize:
       opt/otelcol/otelcol: usr/bin/otelcol

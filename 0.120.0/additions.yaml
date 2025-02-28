@@ -1,0 +1,6 @@
+receivers:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/lokireceiver v0.120.1
+
+# TODO Get the version from contrib upstream
+# receivers:
+#   - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/lokireceiver
