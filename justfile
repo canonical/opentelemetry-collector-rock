@@ -16,6 +16,9 @@ push-to-registry version:
   rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false \
     "oci-archive:${version}/${rock_name}_${version}_amd64.rock" \
     "docker://localhost:32000/${rock_name}-dev:${version}" >/dev/null
+  rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false \
+    "oci-archive:${version}/${rock_name}_${version}_amd64.rock" \
+    "docker://localhost:32000/${rock_name}-dev:latest" >/dev/null
 
 # Pack a rock of a specific version
 pack version=latest_version:

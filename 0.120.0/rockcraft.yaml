@@ -29,11 +29,13 @@ parts:
     override-build: |
       VERSION=v$(yq '.version' rockcraft.yaml)
       # Get the upstream otelcol configs and update it for our custom binary
-      curl -L "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/tags/$VERSION/distributions/otelcol/manifest.yaml" -o "${CRAFT_PART_BUILD}/ocb-core.yaml"
-      yq eval-all '. as $item ireduce ({}; . *+ $item)' ${CRAFT_PART_BUILD}/ocb-core.yaml additions.yaml | tee "${CRAFT_PART_BUILD}/ocb-custom.yaml"
+      curl -L "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/tags/$VERSION/distributions/otelcol/manifest.yaml" -o "${CRAFT_PART_BUILD}/core-manifest.yaml"
+      curl -L "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/tags/$VERSION/distributions/otelcol-contrib/manifest.yaml" -o "${CRAFT_PART_BUILD}/contrib-manifest.yaml"
+      ./combine.sh "${CRAFT_PART_BUILD}/contrib-manifest.yaml" additions.yaml additions-manifest.yaml
+      yq eval-all '. as $item ireduce ({}; . *+ $item)' ${CRAFT_PART_BUILD}/core-manifest.yaml additions-manifest.yaml | tee "${CRAFT_PART_BUILD}/custom-manifest.yaml" >/dev/null
       # Create the binary
       go install go.opentelemetry.io/collector/cmd/builder@$VERSION
-      /root/go/bin/builder --config="${CRAFT_PART_BUILD}/ocb-custom.yaml"
+      /root/go/bin/builder --config="${CRAFT_PART_BUILD}/custom-manifest.yaml"
       install -D -m755 ${CRAFT_PART_BUILD}/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
     organize:
       opt/otelcol/otelcol: usr/bin/otelcol
