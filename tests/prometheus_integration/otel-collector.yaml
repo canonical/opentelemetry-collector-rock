@@ -18,6 +18,8 @@ data:
             scrape_interval: 10s
             static_configs:
             - targets: ['0.0.0.0:8888']
+              labels:
+                testlabel: testvalue
 
     exporters:
       debug:

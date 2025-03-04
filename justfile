@@ -59,9 +59,7 @@ test-integration version=latest_version: (push-to-registry version)
     kubectl create namespace "$namespace"
     # For each  '.yaml' file (excluding 'goss.yaml')
     for manifest in $(find tests/${test_folder} -type f -name '*.yaml' | grep -v 'goss.yaml'); do
-      VERSION=$version envsubst '$VERSION' < "$manifest" > $version/versioned_manifest.yaml
-      kubectl apply -f $version/versioned_manifest.yaml -n "$namespace"  # deploy it in the test namespace
-      rm $version/versioned_manifest.yaml
+      kubectl apply -f "$manifest" -n "$namespace"  # deploy it in the test namespace
     done
     sleep 15 # Wait for the pods to settle and otel-collector to remote-write
     NAMESPACE="$namespace" goss \

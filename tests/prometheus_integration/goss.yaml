@@ -11,11 +11,12 @@ command:
         exit 1
       fi
       echo "Prometheus IP: $PROMETHEUS_IP"
-      # Check there is a `job` label with value `otelcol`
-      LABELS="$(curl -s "${PROMETHEUS_IP}:9090/api/v1/label/job/values")"
-      echo "Prometheus 'job' label values: $LABELS"
-      # The label is 'otel-collector' regardless of how we name the scrape job in the config
-      if ! echo "$LABELS" | grep -q "otel-collector"; then
-        echo "'job=otel-collector' label not found"
+      LABEL_NAME="testlabel"
+      LABEL_VALUE="testvalue"
+      # Check there is a LABEL_NAME label with value LABEL_VALUE
+      LABELS="$(curl -s "${PROMETHEUS_IP}:9090/api/v1/label/${LABEL_NAME}/values")"
+      echo "Prometheus '${LABEL_NAME}' label values: $LABELS"
+      if ! echo "$LABELS" | grep -q "${LABEL_VALUE}"; then
+        echo "'${LABEL_NAME}=${LABEL_VALUE}' label not found"
         exit 2
       fi
