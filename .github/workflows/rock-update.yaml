@@ -13,3 +13,6 @@ jobs:
       rock-name: opentelemetry-collector
       source-repo: open-telemetry/opentelemetry-collector-releases
       check-go: true
+      update-script:
+        # Generate the necessary manifest.yaml for OCB
+        just ocb-manifest
