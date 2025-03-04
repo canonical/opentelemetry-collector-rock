@@ -15,15 +15,8 @@ file:
     group: _daemon_
 
 port:
-  # otlp receiver grpc
-  tcp6:4317:
+  # health-check endpoint
+  tcp6:13133:
     listening: true
-    port: 'tcp6:4317'
+    port: 'tcp6:13133'
     skip: false
-
-  # otlp receiver http
-  tcp6:4318:
-    listening: true
-    port: 'tcp6:4318'
-    skip: false
-
