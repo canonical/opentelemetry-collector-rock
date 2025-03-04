@@ -13,6 +13,7 @@ jobs:
       rock-name: opentelemetry-collector
       source-repo: open-telemetry/opentelemetry-collector-releases
       check-go: true
-      update-script:
+      update-script: |
         # Generate the necessary manifest.yaml for OCB
+        cd "${rockcraft_yaml%/rockcraft.yaml}/.."  # cd into the rock folder
         just ocb-manifest
