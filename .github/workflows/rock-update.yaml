@@ -15,5 +15,5 @@ jobs:
       check-go: true
       update-script: |
         # Generate the necessary manifest.yaml for OCB
-        cd "${rockcraft_yaml%/rockcraft.yaml}/.."  # cd into the rock folder
+        cd "$(dirname "$rockcraft_yaml")"  # cd into the rock folder
         just ocb-manifest
