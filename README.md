@@ -24,3 +24,8 @@ Automation takes care of:
 * pulling upstream releases, creating a PR with the necessary files to be manually reviewed;
 * on PRs, validate the added (or modified) rocks by running `kgoss`;
 * releasing to GHCR at [ghcr.io/canonical/opentelemetry-collector:dev](https://ghcr.io/canonical/opentelemetry-collector:dev), when merging to main, for development purposes.
+
+Prerequisites:
+* install [goss](https://github.com/goss-org/goss/#manual-installation) and [kgoss](https://github.com/goss-org/goss/tree/master/extras/kgoss#install)
+* do not use microk8s.kubectl (from snap) due to permission errors
+    * use the kubectl snap instead

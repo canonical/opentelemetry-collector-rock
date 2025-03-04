@@ -16,14 +16,17 @@ push-to-registry version:
   rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false \
     "oci-archive:${version}/${rock_name}_${version}_amd64.rock" \
     "docker://localhost:32000/${rock_name}-dev:${version}" >/dev/null
+  rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false \
+    "oci-archive:${version}/${rock_name}_${version}_amd64.rock" \
+    "docker://localhost:32000/${rock_name}-dev:latest" >/dev/null
 
 # Pack a rock of a specific version
-pack version:
+pack version=latest_version:
   echo "Packing opentelemetry-collector: $version"
   cd "$version" && rockcraft pack
 
 # `rockcraft clean` for a specific version
-clean version:
+clean version=latest_version:
   echo "Cleaning opentelemetry-collector: $version"
   cd "$version" && rockcraft clean
 
@@ -70,3 +73,22 @@ test-integration version=latest_version: (push-to-registry version)
     kubectl delete all --all -n "$namespace"
     kubectl delete namespace "$namespace"
   done
+
+# Generate the OCB manifest
+ocb-manifest version=latest_version:
+  #!/usr/bin/env bash
+  BASE_URL="https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases\
+  /refs/tags/v${version}/distributions/"
+  cd "${version}"
+  wget "${BASE_URL}/otelcol/manifest.yaml" -O "manifest-core.yaml" --quiet
+  wget "${BASE_URL}/otelcol-contrib/manifest.yaml" -O "manifest-contrib.yaml" --quiet
+  yq eval-all '
+    select(fileIndex == 0) as $core |
+    select(fileIndex == 1) as $contrib |
+    select(fileIndex == 2) as $additions |
+    $contrib |
+    with_entries(.value |= map(select(.gomod | contains($additions.*.[])))) as $filtered |
+    $filtered *+ $core
+  ' manifest-core.yaml manifest-contrib.yaml manifest-additions.yaml | tee manifest.yaml >/dev/null
+  echo "OCB manifest generated in ${version}/manifest.yaml"
+

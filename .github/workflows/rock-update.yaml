@@ -8,8 +8,12 @@ on:
 jobs:
   build:
     uses: canonical/observability/.github/workflows/rock-update.yaml@v1
+    secrets: inherit
     with:
       rock-name: opentelemetry-collector
       source-repo: open-telemetry/opentelemetry-collector-releases
       check-go: true
-    secrets: inherit
+      update-script: |
+        # Generate the necessary manifest.yaml for OCB
+        cd "$(dirname "$rockcraft_yaml")"  # cd into the rock folder
+        just ocb-manifest
