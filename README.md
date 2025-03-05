@@ -29,3 +29,4 @@ Prerequisites:
 * install [goss](https://github.com/goss-org/goss/#manual-installation) and [kgoss](https://github.com/goss-org/goss/tree/master/extras/kgoss#install)
 * do not use microk8s.kubectl (from snap) due to permission errors
     * use the kubectl snap instead
+* sign the [CLA](https://ubuntu.com/legal/contributors)
