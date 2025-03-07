@@ -1,2 +1,5 @@
 receivers:
   - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/lokireceiver
+
+exporters:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/lokiexporter
