@@ -1,6 +1,6 @@
 process:
   otelcol:
-    running: true
+    running: false
 
 file:
   /etc/otelcol/config.yaml:
