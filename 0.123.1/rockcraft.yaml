@@ -29,15 +29,8 @@ parts:
       - CGO_ENABLED: "0"
       - GOOS: linux
     override-build: |
-      get_builder_latest_version() {
-        set +o pipefail
-        local version=$(git ls-remote --tags --sort=-v:refname https://github.com/open-telemetry/opentelemetry-collector/ | head -n 1 | awk '{print $2}' | sed -E 's|refs/tags/||;s|\^\{\}||')
-        set -o pipefail
-        echo "$version"
-      }
-      BUILDER_VERSION=$(get_builder_latest_version)
       # Create the binary
-      go install go.opentelemetry.io/collector/cmd/builder@${BUILDER_VERSION}
+      go install go.opentelemetry.io/collector/cmd/builder@v0.123.0
       /root/go/bin/builder --config="${CRAFT_PART_BUILD}/manifest.yaml"
       install -D -m755 ${CRAFT_PART_BUILD}/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
     organize:
