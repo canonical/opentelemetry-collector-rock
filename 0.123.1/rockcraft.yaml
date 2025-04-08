@@ -23,13 +23,21 @@ parts:
     build-snaps:
       - yq/v4/stable
       - go/1.23/stable
+    build-packages:
+      - git
     build-environment:
       - CGO_ENABLED: "0"
       - GOOS: linux
     override-build: |
-      VERSION=v$(yq '.version' rockcraft.yaml)
+      get_latest_version() {
+        set +o pipefail
+        local version=$(git ls-remote --tags --sort=-v:refname https://github.com/open-telemetry/opentelemetry-collector/ | head -n 1 | awk '{print $2}' | sed -E 's|refs/tags/||;s|\^\{\}||')
+        set -o pipefail
+        echo "$version"
+      }
+      BUILDER_VERSION=$(get_latest_version)
       # Create the binary
-      go install go.opentelemetry.io/collector/cmd/builder@$VERSION
+      go install go.opentelemetry.io/collector/cmd/builder@${BUILDER_VERSION}
       /root/go/bin/builder --config="${CRAFT_PART_BUILD}/manifest.yaml"
       install -D -m755 ${CRAFT_PART_BUILD}/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
     organize:
@@ -41,7 +49,6 @@ parts:
         owner: 584792
         group: 584792
         mode: "500"
-    source-tag: v0.123.1
   default-config:
     plugin: dump
     source: .
