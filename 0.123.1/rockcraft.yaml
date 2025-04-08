@@ -31,6 +31,8 @@ parts:
       - GOOS: linux
     stage:
       - bin/builder
+    prime:
+      - "-*"
   opentelemetry-collector:
     after:
       - ocb
