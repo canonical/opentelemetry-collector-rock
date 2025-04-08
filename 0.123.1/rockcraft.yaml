@@ -29,13 +29,13 @@ parts:
       - CGO_ENABLED: "0"
       - GOOS: linux
     override-build: |
-      get_latest_version() {
+      get_builder_latest_version() {
         set +o pipefail
         local version=$(git ls-remote --tags --sort=-v:refname https://github.com/open-telemetry/opentelemetry-collector/ | head -n 1 | awk '{print $2}' | sed -E 's|refs/tags/||;s|\^\{\}||')
         set -o pipefail
         echo "$version"
       }
-      BUILDER_VERSION=$(get_latest_version)
+      BUILDER_VERSION=$(get_builder_latest_version)
       # Create the binary
       go install go.opentelemetry.io/collector/cmd/builder@${BUILDER_VERSION}
       /root/go/bin/builder --config="${CRAFT_PART_BUILD}/manifest.yaml"
