@@ -27,7 +27,7 @@ parts:
       - CGO_ENABLED: "0"
       - GOOS: linux
     override-build: |
-      VERSION=v$(yq '.version' rockcraft.yaml)
+      VERSION="v0.123.0"
       # Create the binary
       go install go.opentelemetry.io/collector/cmd/builder@$VERSION
       /root/go/bin/builder --config="${CRAFT_PART_BUILD}/manifest.yaml"
@@ -41,7 +41,6 @@ parts:
         owner: 584792
         group: 584792
         mode: "500"
-    source-tag: v0.123.1
   default-config:
     plugin: dump
     source: .
