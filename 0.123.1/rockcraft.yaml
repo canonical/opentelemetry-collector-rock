@@ -17,20 +17,30 @@ services:
     command: "/usr/bin/otelcol [ --config /etc/otelcol/config.yaml ]"
 run-user: _daemon_
 parts:
-  opentelemetry-collector:
-    plugin: dump
-    source: .
+  ocb:
+    plugin: go
+    source: "https://github.com/open-telemetry/opentelemetry-collector.git"
+    source-type: "git"
+    source-tag: "v0.123.0"
+    source-depth: 1
+    source-subdir: "cmd/builder"
     build-snaps:
-      - yq/v4/stable
       - go/1.23/stable
     build-environment:
       - CGO_ENABLED: "0"
       - GOOS: linux
+    stage:
+      - bin/builder
+    prime:
+      - "-*"
+  opentelemetry-collector:
+    after:
+      - ocb
+    plugin: dump
+    source: .
     override-build: |
-      VERSION="v0.123.0"
       # Create the binary
-      go install go.opentelemetry.io/collector/cmd/builder@$VERSION
-      /root/go/bin/builder --config="${CRAFT_PART_BUILD}/manifest.yaml"
+      builder --config="${CRAFT_PART_BUILD}/manifest.yaml"
       install -D -m755 ${CRAFT_PART_BUILD}/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
     organize:
       opt/otelcol/otelcol: usr/bin/otelcol
