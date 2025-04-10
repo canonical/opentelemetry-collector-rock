@@ -1,0 +1,61 @@
+--- # Prometheus config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    # prometheus config goes here
+    global:
+      scrape_interval: 15s  # Default scrape interval
+
+    scrape_configs:
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']  # Adjust as necessary
+  web.yml: |
+    basic_auth_users:
+      admin: $2b$12$Y8c11KDllfrjOhlbyorHXOdww3G1mkf8klSCi8GFdFfPW4jwtYZbO  # the password is 'password'
+--- # Prometheus Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: ubuntu/prometheus:2.53-24.04
+          args: ["--args", "prometheus", "--web.enable-remote-write-receiver --web.config.file=/etc/prometheus/web.yml"]
+          ports:
+            - containerPort: 9090 # Prometheus port
+          volumeMounts:
+            - name: prometheus-config-volume
+              mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+            - name: prometheus-config-volume
+              mountPath: /etc/prometheus/web.yml
+              subPath: web.yml
+      volumes:
+        - name: prometheus-config-volume
+          configMap:
+            name: prometheus-config
+--- # Prometheus Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9090
+  selector:
+    app: prometheus
