@@ -14,7 +14,7 @@ command:
       LABEL_NAME="testlabel"
       LABEL_VALUE="testvalue"
       # Check there is a LABEL_NAME label with value LABEL_VALUE
-      LABELS="$(curl -s "${PROMETHEUS_IP}:9090/api/v1/label/${LABEL_NAME}/values")"
+      LABELS="$(curl -s -u admin:password "${PROMETHEUS_IP}:9090/api/v1/label/${LABEL_NAME}/values")"
       echo "Prometheus '${LABEL_NAME}' label values: $LABELS"
       if ! echo "$LABELS" | grep -q "${LABEL_VALUE}"; then
         echo "'${LABEL_NAME}=${LABEL_VALUE}' label not found"
