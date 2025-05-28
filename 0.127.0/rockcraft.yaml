@@ -53,7 +53,6 @@ parts:
         group: 584792
         mode: "500"
     source-tag: v0.127.0
-    build-snaps: go/1.23/stable
   default-config:
     plugin: dump
     source: .
