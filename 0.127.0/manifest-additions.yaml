@@ -1,0 +1,12 @@
+extensions:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/extension/basicauthextension
+
+receivers:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/lokireceiver
+
+processors:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor
+  - github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor
+
+exporters:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/lokiexporter
