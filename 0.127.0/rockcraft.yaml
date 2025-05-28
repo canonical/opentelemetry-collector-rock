@@ -52,7 +52,6 @@ parts:
         owner: 584792
         group: 584792
         mode: "500"
-    source-tag: v0.127.0
   default-config:
     plugin: dump
     source: .
