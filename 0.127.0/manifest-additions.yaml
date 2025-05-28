@@ -6,6 +6,7 @@ receivers:
 
 processors:
   - github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor
+  - github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor
 
 exporters:
   - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/lokiexporter
