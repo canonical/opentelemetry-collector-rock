@@ -24,6 +24,7 @@ exporters:
 processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor v0.127.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.127.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.127.0
   - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.127.0
   - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.127.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.127.0

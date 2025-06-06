@@ -4,6 +4,7 @@ set export # Just variables are exported to environment variables
 rock_name := `echo ${PWD##*/} | sed 's/-rock//'`
 # To find the latest version, get the "last" folder that starts with a number
 latest_version := `find . -maxdepth 1 -type d -name '[0-9]*' | sort -V | tail -n1 | sed 's@./@@'`
+manifest_path := latest_version + "/manifest.yaml"
 
 [private]
 default:
@@ -34,9 +35,21 @@ clean version=latest_version:
 run version=latest_version: (push-to-registry version)
   kgoss edit -i localhost:32000/${rock_name}-dev:${version}
 
+# Make sure you've run ocb-manifest
+lint-manifest version=latest_version: (ocb-manifest version "/tmp/manifest.yaml")
+  #!/usr/bin/env bash
+  if ! diff -q "${version}/manifest.yaml" "/tmp/manifest.yaml"; then
+    echo "The manifest.yaml for ${version} has not been updated."
+    echo "Please run: just ocb-manifest ${version}"
+    exit  1
+  else
+    echo "The manifest.yaml for ${version} is correct!"
+  fi
+
 # Run all the tests
 [group("test")]
-test version=latest_version: (push-to-registry version) \
+test version=latest_version: (lint-manifest version) \
+  (push-to-registry version) \
   (test-isolation version) \
   (test-integration version)
 
@@ -75,13 +88,12 @@ test-integration version=latest_version: (push-to-registry version)
   done
 
 # Generate the OCB manifest
-ocb-manifest version=latest_version:
+ocb-manifest version=latest_version manifest=(version + "/manifest.yaml"):
   #!/usr/bin/env bash
   BASE_URL="https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases\
   /refs/tags/v${version}/distributions/"
-  cd "${version}"
-  wget "${BASE_URL}/otelcol/manifest.yaml" -O "manifest-core.yaml" --quiet
-  wget "${BASE_URL}/otelcol-contrib/manifest.yaml" -O "manifest-contrib.yaml" --quiet
+  wget "${BASE_URL}/otelcol/manifest.yaml" -O "${version}/manifest-core.yaml" --quiet
+  wget "${BASE_URL}/otelcol-contrib/manifest.yaml" -O "${version}/manifest-contrib.yaml" --quiet
   yq eval-all '
     select(fileIndex == 0) as $core |
     select(fileIndex == 1) as $contrib |
@@ -89,6 +101,7 @@ ocb-manifest version=latest_version:
     $contrib |
     with_entries(.value |= map(select(.gomod | contains($additions.*.[])))) as $filtered |
     $filtered *+ $core
-  ' manifest-core.yaml manifest-contrib.yaml manifest-additions.yaml | tee manifest.yaml >/dev/null
-  echo "OCB manifest generated in ${version}/manifest.yaml"
+  ' ${version}/manifest-core.yaml ${version}/manifest-contrib.yaml ${version}/manifest-additions.yaml \
+    | tee ${manifest} >/dev/null
+  echo "OCB manifest generated in ${manifest}"
 
