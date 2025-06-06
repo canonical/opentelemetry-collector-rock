@@ -48,7 +48,8 @@ lint-manifest version=latest_version: (ocb-manifest version "/tmp/manifest.yaml"
 
 # Run all the tests
 [group("test")]
-test version=latest_version: (push-to-registry version) \
+test version=latest_version: (lint-manifest version) \
+  (push-to-registry version) \
   (test-isolation version) \
   (test-integration version)
 
