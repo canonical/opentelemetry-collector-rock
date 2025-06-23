@@ -15,8 +15,11 @@ jobs:
       check-go: true
       update-script: |
         cd "$(dirname "$rockcraft_yaml")"  # cd into the rock folder
-        # Move the Go version to `ocb`, instead of the `opentelemetry-collector` part
+        # Move the Go version to `ocb` from the `opentelemetry-collector` part
         yq -i '(.parts.ocb.build-snaps) = (.parts.opentelemetry-collector.build-snaps | .[])' "$rockcraft_yaml"
         yq -i 'del(.parts.opentelemetry-collector.build-snaps)' "$rockcraft_yaml"
+        # Move the version tag to `ocb` from the `opentelemetry-collector` part
+        yq -i '(.parts.ocb.source-tag) = (.parts.opentelemetry-collector.source-tag)' "$rockcraft_yaml"
+        yq -i 'del(.parts.opentelemetry-collector.source-tag)' "$rockcraft_yaml"
         # Generate the OCB manifest
         just ocb-manifest
