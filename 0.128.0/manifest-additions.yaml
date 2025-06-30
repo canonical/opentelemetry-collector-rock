@@ -3,6 +3,7 @@ extensions:
 
 receivers:
   - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/lokireceiver
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver
 
 processors:
   - github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor
