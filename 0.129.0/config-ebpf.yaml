@@ -1,0 +1,15 @@
+receivers:
+  profiling:
+    SamplesPerSecond: 19
+
+exporters:
+  otlp:
+    endpoint: 10.1.194.132:4040
+    tls: 
+      insecure: true
+
+service:
+  pipelines:
+    profiles:
+      receivers: [ profiling ]
+      exporters: [ otlp ]

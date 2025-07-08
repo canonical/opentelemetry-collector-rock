@@ -4,7 +4,7 @@ summary: Crucial component in the OpenTelemetry ecosystem.
 description: |
   Designed to collect, process, and export telemetry data such as metrics, logs,
   and traces from various sources to multiple destinations.
-version: "0.129.1"
+version: "0.129.0"
 base: ubuntu@24.04
 license: Apache-2.0
 platforms:
@@ -15,20 +15,19 @@ services:
     override: replace
     summary: "Entry point for opentelemetry-collector oci-image"
     startup: enabled
-    command: "/usr/bin/otelcol [ --config /etc/otelcol/config.yaml ]"
-run-user: _daemon_
+    command: "/usr/bin/otelcol [ --config /etc/otelcol/config.yaml --feature-gates service.profilesSupport ]"
 parts:
   ocb:
     plugin: go
     source: "https://github.com/open-telemetry/opentelemetry-collector.git"
     source-type: "git"
-    source-tag: "v0.129.1"
+    source-tag: "v0.129.0"
     source-depth: 1
     source-subdir: "cmd/builder"
     build-snaps:
       - go/1.23/stable
     build-environment:
-      - CGO_ENABLED: "0"
+      - CGO_ENABLED: "1"
       - GOOS: linux
     stage:
       - bin/builder
@@ -45,13 +44,6 @@ parts:
       install -D -m755 ${CRAFT_PART_BUILD}/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
     organize:
       opt/otelcol/otelcol: usr/bin/otelcol
-    permissions:
-      # _daemon_ user has UID/GID = 584792
-      # Ref: https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#run-user
-      - path: usr/bin/otelcol
-        owner: 584792
-        group: 584792
-        mode: "500"
   default-config:
     plugin: dump
     source: .
@@ -61,8 +53,6 @@ parts:
       - etc/otelcol/config.yaml
     permissions:
       - path: etc/otelcol/config.yaml
-        owner: 584792
-        group: 584792
         mode: "600"
   ca-certs:
     plugin: nil
