@@ -11,7 +11,7 @@ jobs:
     secrets: inherit
     with:
       rock-name: opentelemetry-collector
-      source-repo: open-telemetry/opentelemetry-collector-releases
+      source-repo: open-telemetry/opentelemetry-collector
       check-go: true
       update-script: |
         cd "$(dirname "$rockcraft_yaml")"  # cd into the rock folder
