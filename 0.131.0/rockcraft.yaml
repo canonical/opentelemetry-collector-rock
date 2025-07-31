@@ -1,0 +1,80 @@
+# Based on: https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol/Dockerfile
+name: opentelemetry-collector
+summary: Crucial component in the OpenTelemetry ecosystem.
+description: |
+  Designed to collect, process, and export telemetry data such as metrics, logs,
+  and traces from various sources to multiple destinations.
+version: "0.131.0"
+base: ubuntu@24.04
+license: Apache-2.0
+platforms:
+  amd64:
+  arm64:
+services:
+  otelcol:
+    override: replace
+    summary: "Entry point for opentelemetry-collector oci-image"
+    startup: enabled
+    command: "/usr/bin/otelcol [ --config /etc/otelcol/config.yaml ]"
+run-user: _daemon_
+parts:
+  ocb:
+    plugin: go
+    source: "https://github.com/open-telemetry/opentelemetry-collector.git"
+    source-type: "git"
+    source-tag: "v0.131.0"
+    source-depth: 1
+    source-subdir: "cmd/builder"
+    build-snaps:
+      - go/1.23/stable
+    build-environment:
+      - CGO_ENABLED: "0"
+      - GOOS: linux
+    stage:
+      - bin/builder
+    prime:
+      - "-*"
+  opentelemetry-collector:
+    after:
+      - ocb
+    plugin: dump
+    source: .
+    override-build: |
+      # Create the binary
+      builder --config="${CRAFT_PART_BUILD}/manifest.yaml"
+      install -D -m755 ${CRAFT_PART_BUILD}/_build/otelcol ${CRAFT_PART_INSTALL}/opt/otelcol/otelcol
+    organize:
+      opt/otelcol/otelcol: usr/bin/otelcol
+    permissions:
+      # _daemon_ user has UID/GID = 584792
+      # Ref: https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#run-user
+      - path: usr/bin/otelcol
+        owner: 584792
+        group: 584792
+        mode: "500"
+  default-config:
+    plugin: dump
+    source: .
+    organize:
+      config.yaml: etc/otelcol/config.yaml
+    stage:
+      - etc/otelcol/config.yaml
+    permissions:
+      - path: etc/otelcol/config.yaml
+        owner: 584792
+        group: 584792
+        mode: "600"
+  ca-certs:
+    plugin: nil
+    overlay-packages:
+      - ca-certificates
+  deb-security-manifest:
+    # https://github.com/canonical/oci-factory/blob/5ce610fa00456a34ef54c09b4a82537447f61a90/IMAGE_MAINTAINER_AGREEMENT.md?plain=1#L159
+    plugin: nil
+    after:
+      - opentelemetry-collector
+      - ca-certs
+    override-prime: |
+      set -x
+      mkdir -p $CRAFT_PRIME/usr/share/rocks/
+      (echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && dpkg-query --admindir=$CRAFT_PRIME/var/lib/dpkg/ -f '${db:Status-Abbrev},${binary:Package},${Version},${source:Package},${Source:Version}\n' -W) > $CRAFT_PRIME/usr/share/rocks/dpkg.query
