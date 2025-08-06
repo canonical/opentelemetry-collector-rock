@@ -19,7 +19,8 @@ spec:
           image: ubuntu/node-exporter:1.9-24.04
           args:
             - '--args'
-            - '--path.rootfs=/host'
+            - '--path.rootfs'
+            - '/host'
           ports:
             - containerPort: 9100 # Default port for Node Exporter
           volumeMounts:

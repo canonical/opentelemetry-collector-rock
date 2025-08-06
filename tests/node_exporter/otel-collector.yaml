@@ -35,7 +35,7 @@ data:
       prometheus:
         endpoint: ":8889"
       prometheusremotewrite:
-        endpoint: "http://prometheus.test-opentelemetry-collector-rock-prometheus-integration.svc.cluster.local:9090/api/v1/write"
+        endpoint: "http://prometheus.test-opentelemetry-collector-rock-node-exporter.svc.cluster.local:9090/api/v1/write"
 
     service:
       pipelines:
