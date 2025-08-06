@@ -60,10 +60,10 @@ test-isolation version=latest_version: (push-to-registry version)
 
 # Test the rock integration with other workloads
 [group("test")]
-test-integration version=latest_version: (push-to-registry version)
+test-integration version=latest_version test_name="": (push-to-registry version)
   #!/usr/bin/env bash
   # For all the subfolder in tests/
-  for test_folder in $(find tests -mindepth 1 -maxdepth 1 -type d | sed 's@tests/@@'); do
+  for test_folder in $(find tests -mindepth 1 -maxdepth 1 -type d | sed 's@tests/@@' | grep -i "$test_name"); do
     # Create a namespace for the tests to run in
     namespace="test-${rock_name}-rock-${test_folder//_/-}"
     echo "+ Preparing the testing environment"

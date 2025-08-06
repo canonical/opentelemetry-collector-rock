@@ -1,0 +1,31 @@
+command:
+  remote-write:
+    exit-status: 0
+    exec: |
+      echo "Namespace: {{.Env.NAMESPACE}}"
+      # Get Prometheus pod
+      PROMETHEUS_IP="$(kubectl get pod -n {{.Env.NAMESPACE}} -l app="prometheus" \
+        -o jsonpath='{.items[*].status.podIP}')"
+      if [ -z "$PROMETHEUS_IP" ]; then
+        echo "Prometheus pod IP not found, maybe the pod isn't ready yet"
+        exit 1
+      fi
+      echo "Prometheus IP: $PROMETHEUS_IP"
+      LABEL_NAME="testlabel"
+      LABEL_VALUE="testvalue"
+      # Check there is a LABEL_NAME label with value LABEL_VALUE
+      LABELS="$(curl -s "${PROMETHEUS_IP}:9090/api/v1/label/${LABEL_NAME}/values")"
+      echo "Prometheus '${LABEL_NAME}' label values: $LABELS"
+      if ! echo "$LABELS" | grep -q "${LABEL_VALUE}"; then
+        echo "'${LABEL_NAME}=${LABEL_VALUE}' label not found"
+        exit 2
+      fi
+      LABEL_NAME="source"
+      LABEL_VALUE="node-exporter"
+      # Check specifically for the label 'source: node-exporter'
+      LABELS="$(curl -s "${PROMETHEUS_IP}:9090/api/v1/label/${LABEL_NAME}/values")"
+      echo "Prometheus '${LABEL_NAME}' label values: $LABELS"
+      if ! echo "$LABELS" | grep -q "${LABEL_VALUE}"; then
+        echo "'${LABEL_NAME}=${LABEL_VALUE}' label not found"
+        exit 2
+      fi
