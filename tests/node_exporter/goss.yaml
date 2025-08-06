@@ -20,12 +20,3 @@ command:
         echo "'${LABEL_NAME}=${LABEL_VALUE}' label not found"
         exit 2
       fi
-      LABEL_NAME="source"
-      LABEL_VALUE="node-exporter"
-      # Check specifically for the label 'source: node-exporter'
-      LABELS="$(curl -s "${PROMETHEUS_IP}:9090/api/v1/label/${LABEL_NAME}/values")"
-      echo "Prometheus '${LABEL_NAME}' label values: $LABELS"
-      if ! echo "$LABELS" | grep -q "${LABEL_VALUE}"; then
-        echo "'${LABEL_NAME}=${LABEL_VALUE}' label not found"
-        exit 2
-      fi

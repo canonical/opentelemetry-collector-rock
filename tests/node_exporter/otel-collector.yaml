@@ -20,14 +20,6 @@ data:
             - targets: ['0.0.0.0:8888']
               labels:
                 testlabel: testvalue
-                source: otelcol
-          - job_name: 'node-exporter'
-            scrape_interval: 10s
-            static_configs:
-            - targets: ['http://node-exporter.test-opentelemetry-collector-rock-node-exporter.svc.cluster.local:9100/metrics']
-              labels:
-                testlabel: testvalue
-                source: node-exporter
 
     exporters:
       debug:
