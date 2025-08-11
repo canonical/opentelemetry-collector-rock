@@ -12,11 +12,16 @@ command:
       fi
       echo "Prometheus IP: $PROMETHEUS_IP"
       LABEL_NAME="testlabel"
-      LABEL_VALUE="testvalue"
-      # Check there is a LABEL_NAME label with value LABEL_VALUE
+      LABEL_VALUE_1="otelcol"
+      LABEL_VALUE_2="nodeexporter"
+      # Check there is a LABEL_NAME label with value LABEL_VALUE_x
       LABELS="$(curl -s "${PROMETHEUS_IP}:9090/api/v1/label/${LABEL_NAME}/values")"
       echo "Prometheus '${LABEL_NAME}' label values: $LABELS"
-      if ! echo "$LABELS" | grep -q "${LABEL_VALUE}"; then
-        echo "'${LABEL_NAME}=${LABEL_VALUE}' label not found"
+      if ! echo "$LABELS" | grep -q "${LABEL_VALUE_1}"; then
+        echo "'${LABEL_NAME}=${LABEL_VALUE_1}' label not found"
         exit 2
+      fi
+      if ! echo "$LABELS" | grep -q "${LABEL_VALUE_2}"; then
+        echo "'${LABEL_NAME}=${LABEL_VALUE_2}' label not found"
+        exit 3
       fi
