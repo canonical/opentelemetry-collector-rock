@@ -11,7 +11,7 @@ The rocks on this repository are built with [OCI Factory](https://github.com/can
 
 **How do I interact with this repo?** This repo uses [`just`](https://github.com/casey/just) to easily run some commands:
 ```
-∮ just                                                                                                                                                      14:39:35
+∮ just
 Available recipes:
     clean version=latest_version          # `rockcraft clean` for a specific version
     lint-manifest version=latest_version  # Make sure you've run ocb-manifest
@@ -44,11 +44,11 @@ Prerequisites:
 
 ## Usage
 
-If you want to run this OpenTelemtry Collector rock to observe a non-charmed deployment, all you need is to write a few yaml manifests.
+If you want to run this OpenTelemtry Collector rock to observe a non-charmed deployment, you will need to write a few yaml manifests.
 
 Here are the manifests you need to deploy the Collector and a Node Exporter pod to get metrics from the local host:
-- [`opentelemetry-collector.yaml`](https://github.com/canonical/opentelemetry-collector-rock/blob/c0b24df15627dc811472a1ce4589dcc85e380f40/tests/node_exporter/otel-collector.yaml)
-- [`node-exporter.yaml`](https://github.com/canonical/opentelemetry-collector-rock/blob/c0b24df15627dc811472a1ce4589dcc85e380f40/tests/node_exporter/node-exporter.yaml)
+- [`opentelemetry-collector.yaml`](tests/node_exporter/otel-collector.yaml)
+- [`node-exporter.yaml`](tests/node_exporter/node-exporter.yaml)
 
 Open the `opentelemetry-collector.yaml` manifest and customize it to your needs; specifically:
 - modify the config to observe your non-charmed deployment and to write data to your Prometheus backend
