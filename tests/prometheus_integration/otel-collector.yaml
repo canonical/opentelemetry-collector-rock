@@ -19,7 +19,13 @@ data:
             static_configs:
             - targets: ['0.0.0.0:8888']
               labels:
-                testlabel: testvalue
+                testlabel: otelcol
+          - job_name: 'node-exporter'
+            scrape_interval: 10s
+            static_configs:
+            - targets: ['http:node-exporter.test-opentelemetry-collector-rock-prometheus-integration.svc.cluster.local:8888']
+              labels:
+                testlabel: nodeexporter
 
     exporters:
       debug:

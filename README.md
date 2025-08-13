@@ -47,8 +47,8 @@ Prerequisites:
 If you want to run this OpenTelemtry Collector rock to observe a non-charmed deployment, you will need to write a few yaml manifests.
 
 Here are the manifests you need to deploy the Collector and a Node Exporter pod to get metrics from the local host:
-- [`opentelemetry-collector.yaml`](tests/node_exporter/otel-collector.yaml)
-- [`node-exporter.yaml`](tests/node_exporter/node-exporter.yaml)
+- [`opentelemetry-collector.yaml`](tests/prometheus_integration/otel-collector.yaml)
+- [`node-exporter.yaml`](tests/prometheus_integration/node-exporter.yaml)
 
 Open the `opentelemetry-collector.yaml` manifest and customize it to your needs; specifically:
 - modify the config to observe your non-charmed deployment and to write data to your Prometheus backend
