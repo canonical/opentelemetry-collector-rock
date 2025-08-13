@@ -1,4 +1,4 @@
-# Based on: https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol/Dockerfile
+# Based on: https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol/Dockerfile 
 name: opentelemetry-collector
 summary: Crucial component in the OpenTelemetry ecosystem.
 description: |

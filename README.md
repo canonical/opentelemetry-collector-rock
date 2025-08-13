@@ -11,12 +11,18 @@ The rocks on this repository are built with [OCI Factory](https://github.com/can
 
 **How do I interact with this repo?** This repo uses [`just`](https://github.com/casey/just) to easily run some commands:
 ```
-$ just
+∮ just
 Available recipes:
-    clean version               # `rockcraft clean` for a specific version
-    pack version                # Pack a rock of a specific version
-    run version=latest_version  # Run a rock and open a shell into it with `kgoss`
-    test version=latest_version # Test the rock with `kgoss`
+    clean version=latest_version          # `rockcraft clean` for a specific version
+    lint-manifest version=latest_version  # Make sure you've run ocb-manifest
+    ocb-manifest version=latest_version manifest=(version + "/manifest.yaml") # Generate the OCB manifest
+    pack version=latest_version           # Pack a rock of a specific version
+    run version=latest_version            # Run a rock and open a shell into it with `kgoss`
+
+    [test]
+    test version=latest_version           # Run all the tests
+    test-integration version=latest_version test_name="" # Test the rock integration with other workloads
+    test-isolation version=latest_version # Test the rock with `kgoss`
 ```
 
 **What are all those manifests?** Each rock version has a set of `manifest*` files, that tell OCB what to include in the Collector. We include everything in `-core`, but cherry-pick from `-contrib` what we mention in `-additions`. Running `just ocb-manifest` generates a final `manifest.yaml`, which is the one used in the rock. Summarizing:
@@ -35,3 +41,24 @@ Prerequisites:
 * do not use microk8s.kubectl (from snap) due to permission errors
     * use the kubectl snap instead
 * sign the [CLA](https://ubuntu.com/legal/contributors)
+
+## Usage
+
+If you want to run this OpenTelemtry Collector rock to observe a non-charmed deployment, you will need to write a few yaml manifests.
+
+Here are the manifests you need to deploy the Collector and a Node Exporter pod to get metrics from the local host:
+- [`opentelemetry-collector.yaml`](tests/prometheus_integration/otel-collector.yaml)
+- [`node-exporter.yaml`](tests/prometheus_integration/node-exporter.yaml)
+
+Open the `opentelemetry-collector.yaml` manifest and customize it to your needs; specifically:
+- modify the config to observe your non-charmed deployment and to write data to your Prometheus backend
+- update the image URI from `localhost:32000/...` to `ubuntu/opentelemetry-collector:0.130-24.04`
+
+Now you can apply them:
+
+```bash
+kubectl apply -f node-exporter.yaml
+kubectl apply -f opentelemetry-collector.yaml
+```
+
+Congrats, you're now observing your non-charmed deployment!
