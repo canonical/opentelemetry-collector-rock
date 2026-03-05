@@ -1,0 +1,25 @@
+services:
+  prometheus:
+    image: ubuntu/prometheus:2.53-24.04
+    command: ["--args", "prometheus", "--web.enable-remote-write-receiver", "--web.config.file=/etc/prometheus/web.yml"]
+    ports:
+      - "9090:9090"
+    configs:
+      - source: prometheus_scrape_config
+        target: /etc/prometheus/prometheus.yml
+      - source: prometheus_web_config
+        target: /etc/prometheus/web.yml
+
+configs:
+  prometheus_scrape_config:
+    content: |
+      global:
+        scrape_interval: 15s
+      scrape_configs:
+        - job_name: 'prometheus'
+          static_configs:
+            - targets: ['localhost:9090']
+  prometheus_web_config:
+    content: |
+      basic_auth_users:
+        admin: $2b$12$Y8c11KDllfrjOhlbyorHXOdww3G1mkf8klSCi8GFdFfPW4jwtYZbO  # the password is 'password'

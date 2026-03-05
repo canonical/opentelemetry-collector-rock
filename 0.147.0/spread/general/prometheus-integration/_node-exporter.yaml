@@ -1,0 +1,12 @@
+services:
+  node-exporter:
+    image: ubuntu/node-exporter:1.9-24.04
+    command: ["--args", "--path.rootfs=/host"]
+    pid: host
+    volumes:
+      - type: bind
+        source: /
+        target: /host
+        read_only: true
+        bind:
+          propagation: rslave
