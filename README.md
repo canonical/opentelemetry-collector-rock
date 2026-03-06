@@ -1,8 +1,8 @@
 # opentelemetry-collector-rock
 
-[![Open a PR to OCI Factory](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/rock-release-oci-factory.yaml/badge.svg)](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/rock-release-oci-factory.yaml)
-[![Publish to GHCR:dev](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/rock-release-dev.yaml/badge.svg)](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/rock-release-dev.yaml)
-[![Update rock](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/rock-update.yaml/badge.svg)](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/rock-update.yaml)
+[![Open a PR to OCI Factory](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/release-oci-factory.yaml/badge.svg)](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/release-oci-factory.yaml)
+[![Publish to GHCR:dev](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/release-dev.yaml/badge.svg)](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/release-dev.yaml)
+[![Update rock](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/update.yaml/badge.svg)](https://github.com/canonical/opentelemetry-collector-rock/actions/workflows/update.yaml)
 
 [Rocks](https://canonical-rockcraft.readthedocs-hosted.com/en/latest/) for [Opentelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector-releases).
 This repository holds all the necessary files to build rocks for the upstream versions we support.
