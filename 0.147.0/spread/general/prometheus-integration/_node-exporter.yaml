@@ -8,5 +8,3 @@ services:
         source: /
         target: /host
         read_only: true
-        bind:
-          propagation: rslave

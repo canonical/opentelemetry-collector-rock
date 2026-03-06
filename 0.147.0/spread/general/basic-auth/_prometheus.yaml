@@ -22,4 +22,4 @@ configs:
   prometheus_web_config:
     content: |
       basic_auth_users:
-        admin: $2b$12$Y8c11KDllfrjOhlbyorHXOdww3G1mkf8klSCi8GFdFfPW4jwtYZbO  # the password is 'password'
+        admin: $$2b$$12$$Y8c11KDllfrjOhlbyorHXOdww3G1mkf8klSCi8GFdFfPW4jwtYZbO  # the password is 'password'
