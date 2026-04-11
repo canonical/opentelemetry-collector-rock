@@ -32,6 +32,7 @@ ocb-manifest version=latest_version manifest=(version + "/manifest.yaml"):
 [group("maintenance")]
 update source_repo:
   #!/usr/bin/env bash
+  set -eux
   just --justfile rocks.just update {{source_repo}}
   # Additional update steps (Grafana UI)
   latest_release="$(gh release list --repo {{source_repo}} --exclude-pre-releases --limit=1 --json tagName --jq '.[0].tagName')"
