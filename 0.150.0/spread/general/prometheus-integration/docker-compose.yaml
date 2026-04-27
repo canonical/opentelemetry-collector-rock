@@ -1,0 +1,4 @@
+include:
+  - _prometheus.yaml
+  - _node-exporter.yaml
+  - _otel-collector.yaml
