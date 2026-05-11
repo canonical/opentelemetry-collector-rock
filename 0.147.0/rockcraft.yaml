@@ -6,7 +6,7 @@ description: |
   Designed to collect, process, and export telemetry data such as metrics, logs,
   and traces from various sources to multiple destinations.
 version: "0.147.0"
-base: ubuntu@24.04
+base: ubuntu@26.04
 license: Apache-2.0
 platforms:
   amd64:
