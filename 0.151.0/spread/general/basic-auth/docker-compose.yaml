@@ -1,0 +1,3 @@
+include:
+  - _prometheus.yaml
+  - _otel-collector.yaml
