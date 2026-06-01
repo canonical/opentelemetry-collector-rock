@@ -1,0 +1,48 @@
+services:
+  otel-collector:
+    image: rockcraft-test:latest
+    configs:
+      - source: otelcol_config
+        target: /etc/otelcol/config.yaml
+
+configs:
+  otelcol_config:
+    content: |
+      extensions:
+        health_check:
+          endpoint: 0.0.0.0:13133
+
+      receivers:
+        prometheus:
+          config:
+            scrape_configs:
+            - job_name: 'self-monitoring'
+              scrape_interval: 10s
+              static_configs:
+              - targets: ['0.0.0.0:8888']
+                labels:
+                  testlabel: otelcol
+            - job_name: 'node-exporter'
+              scrape_interval: 10s
+              static_configs:
+              - targets: ['node-exporter:9100']
+                labels:
+                  testlabel: nodeexporter
+
+      exporters:
+        debug:
+          verbosity: detailed
+        prometheus:
+          endpoint: ":8889"
+        prometheusremotewrite:
+          endpoint: "http://prometheus:9090/api/v1/write"
+
+      service:
+        pipelines:
+          metrics:
+            receivers: [prometheus]
+            exporters: [debug, prometheus, prometheusremotewrite]
+        extensions: [health_check]
+        telemetry:
+          metrics:
+            level: basic
