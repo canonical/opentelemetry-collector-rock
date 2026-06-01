@@ -2,6 +2,8 @@ set allow-duplicate-recipes
 set allow-duplicate-variables
 import? 'rocks.just'
 
+lts_releases := '{"0.130": "2031-05-01"}'
+
 [private]
 @default:
   just --list
@@ -30,7 +32,7 @@ ocb-manifest version=latest_version manifest=(version + "/manifest.yaml"):
 # Generate a rock for the latest version of the upstream project
 [arg("source_repo", help="Repository of the upstream project in 'org/repo' form")]
 [group("maintenance")]
-update source_repo release_tag="":
+update source_repo:
   #!/usr/bin/env bash
   set -e
   just --justfile rocks.just update {{source_repo}}
