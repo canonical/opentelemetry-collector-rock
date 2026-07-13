@@ -1,0 +1,16 @@
+extensions:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/extension/basicauthextension
+  - github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage
+
+receivers:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/lokireceiver
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver
+
+processors:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor
+  - github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor
+  - github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor
+
+exporters:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/lokiexporter
+  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/syslogexporter
