@@ -19,7 +19,13 @@ suites:
     prepare: |
       # Install dependencies
       sudo snap install docker
-      curl -fsSL https://goss.rocks/install | sh
+
+      # FIXME: https://github.com/canonical/opentelemetry-collector-rock/issues/233
+      GOSS_VERSION="${GOSS_VERSION:-v0.4.9}"
+      curl -fsSL "https://github.com/goss-org/goss/releases/download/${GOSS_VERSION}/goss-linux-amd64" -o /usr/local/bin/goss
+      chmod +rx /usr/local/bin/goss
+      curl -fsSL "https://raw.githubusercontent.com/goss-org/goss/master/extras/dgoss/dgoss" -o /usr/local/bin/dgoss
+      chmod +rx /usr/local/bin/dgoss
 
       # For 'rockcraft.skopeo'
       sudo snap install --classic rockcraft
