@@ -1,0 +1,19 @@
+services:
+  prometheus:
+    image: ubuntu/prometheus:2.53-24.04
+    command: ["--args", "prometheus", "--web.enable-remote-write-receiver"]
+    ports:
+      - "9090:9090"
+    configs:
+      - source: prometheus_scrape_config
+        target: /etc/prometheus/prometheus.yml
+
+configs:
+  prometheus_scrape_config:
+    content: |
+      global:
+        scrape_interval: 15s
+      scrape_configs:
+        - job_name: 'prometheus'
+          static_configs:
+            - targets: ['localhost:9090']
