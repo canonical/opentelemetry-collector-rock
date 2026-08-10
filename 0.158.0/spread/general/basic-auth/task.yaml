@@ -1,0 +1,22 @@
+summary: Run basic-auth integration test
+
+execute: |
+  PROJECT="otelcol-basic-auth-test"
+
+  # Deploy the test stack
+  docker compose --project-name "$PROJECT" up --detach
+
+  # Wait for the containers to settle and otel-collector to remote-write
+  sleep 15
+
+  goss \
+    --gossfile goss.yaml \
+    --log-level debug \
+    validate \
+    --retry-timeout=120s \
+    --sleep=5s
+
+restore: |
+  PROJECT="otelcol-basic-auth-test"
+
+  docker compose --project-name "$PROJECT" down --volumes
