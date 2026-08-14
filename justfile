@@ -2,7 +2,7 @@ set allow-duplicate-recipes
 set allow-duplicate-variables
 import? 'rocks.just'
 
-lts_releases := '{"0.130": "2031-05-01"}'
+source_repo := 'open-telemetry/opentelemetry-collector'
 
 [private]
 @default:
@@ -29,27 +29,31 @@ ocb-manifest version=latest_version manifest=(version + "/manifest.yaml"):
     | tee {{manifest}} >/dev/null
   echo "OCB manifest generated in {{manifest}}"
 
-# Generate a rock for the latest version of the upstream project
-[arg("source_repo", help="Repository of the upstream project in 'org/repo' form")]
+# Patch all existing major.minor folders to the newest upstream patch, refresh OCB parts and manifest
 [group("maintenance")]
-update source_repo:
+update:
   #!/usr/bin/env bash
   set -e
-  just --justfile rocks.just update {{source_repo}}
-  # Additional update steps (Grafana UI)
-  latest_release="$(gh release list --repo {{source_repo}} --exclude-pre-releases --limit=1 --json tagName --jq '.[0].tagName')"
-  # Explicitly filter out prefixes for known rocks, so we can notice if a new rock has a different schema
-  version="${latest_release}"
-  version="${version#mimir-}"  # mimir
-  version="${version#cmd/builder/v}"  # opentelemetry-collector
-  version="${version#v}"  # Generic v- prefix
-  # Substitute the additional version reference
-  cd "$version"
-  # Move the Go version to `ocb` from the `opentelemetry-collector` part
-  yq -i '(.parts.ocb.build-snaps) = (.parts.opentelemetry-collector.build-snaps | .[])' rockcraft.yaml
-  yq -i 'del(.parts.opentelemetry-collector.build-snaps)' rockcraft.yaml
-  # Move the version tag to `ocb` from the `opentelemetry-collector` part
-  yq -i '(.parts.ocb.source-tag) = (.parts.opentelemetry-collector.source-tag)' rockcraft.yaml
-  yq -i 'del(.parts.opentelemetry-collector.source-tag)' rockcraft.yaml
-  # Generate the OCB manifest
-  just ocb-manifest "$version"
+  [[ -z "{{source_repo}}" ]] && { echo "× Set 'source_repo' in the local justfile"; exit 1; }
+  for folder in $(find . -maxdepth 1 -type d -regextype posix-extended -regex '\./[0-9]+\.[0-9]+' -printf '%f\n' | sort -V); do
+    read -r version tag < <(just resolve-tag "$folder")
+    if [[ -z "$version" ]]; then echo "→ no upstream patch found for $folder, skipping"; continue; fi
+    current="$(yq -r '.version' "$folder/rockcraft.yaml")"
+    if [[ "$current" == "$version" ]]; then echo "→ $folder already at $version"; continue; fi
+    echo "Updating $folder: $current → $version (source-tag $tag)"
+    version="$version" tag="$tag" yq -i \
+      '.version = strenv(version) | .parts.ocb["source-tag"] = strenv(tag)' \
+      "$folder/rockcraft.yaml"
+    # Refresh the Go build-snap on the ocb part from the upstream go.mod
+    TMP_DIR="$(mktemp -d)"
+    gh repo clone "{{source_repo}}" "$TMP_DIR/src" -- --branch "$tag" --depth 1 2>/dev/null || true
+    if [[ -f "$TMP_DIR/src/go.mod" ]]; then
+      go_snap_version="$(grep -Po '^go \K(\S+)' "$TMP_DIR/src/go.mod" | sed -E 's/([0-9]+\.[0-9]+).*/\1/')"
+      go_snap_version="$go_snap_version" yq -i \
+        '(.parts.ocb.build-snaps[] | select(test("^go/"))) = "go/"+strenv(go_snap_version)+"/stable"' \
+        "$folder/rockcraft.yaml"
+    fi
+    rm -rf "$TMP_DIR"
+    # Regenerate the OCB manifest for this line
+    just ocb-manifest "$folder"
+  done
